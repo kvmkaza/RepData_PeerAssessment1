@@ -4,22 +4,179 @@ output:
   html_document:
     keep_md: true
 ---
-
+```{r echo=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning = FALSE)
+```
 
 ## Loading and preprocessing the data
+#### Load the required libraries
+
+```{r LoadLibraries}
+library(data.table)
+library(ggplot2)
+library(Hmisc)
+library(plyr)
+library(knitr)
+```
+
+#### Unzip the Activity data file and load into a Data Table
+
+```{r LoadData}
+unzip("./activity.zip")
+
+actDT <- data.table::as.data.table(x = read.csv("./activity.csv",header = TRUE, 
+                                                sep=",",stringsAsFactors = FALSE))
+actDT$date <- data.table::as.IDate(actDT$date,"%Y-%m-%d")
+```
+
+## Q1-What is mean total number of steps taken per day?
+
+#### Calculate the total number of steps taken per day,mean and median values
+
+```{r TotalSteps}
+stepsDay <- actDT[, round(sum(steps)), by=date]
+names(stepsDay) <- c("date", "StepCount")
+
+meanStepsDay <- actDT[, round(mean(steps, na.rm = TRUE)), by=date]
+medianStepsDay <- actDT[, round(median(steps, na.rm = TRUE)), by=date]
+names(meanStepsDay) = c("date", "mean")
+names(medianStepsDay)= c("date", "median")
+actMeanMedian <- merge(meanStepsDay,medianStepsDay)
+
+```
+
+#### Plot a histogram of the total number of steps taken per day
+
+```{r HistogramTotalSteps}
+ggplot(stepsDay, aes(stepsDay$date, stepsDay$StepCount), na.action=na.omit) + 
+  geom_histogram(na.rm = TRUE, stat = "identity") +
+    theme(plot.title=element_text(face=2, hjust = 0, color="blue")) +
+  labs(title = "Day wise Total Steps", x="Date", y="Total Steps") 
+```
+
+#### Report Mean and Median of the total number of steps taken per day
+
+```{r PrintMeanMedian}
+knitr::kable(actMeanMedian, caption = "Mean and Median of the total number of steps taken per day")
+```
+
+## Q2-What is the average daily activity pattern?
+
+#### Compute averaged steps taken by interval and the maximum number of steps taken
+
+```{r MaxStepsInterval}
+stepsInterval <- actDT[, mean(steps, na.rm = TRUE), by=interval]
+names(stepsInterval) =c("Interval", "AverageSteps")
+
+stepsIntervalMax <- stepsInterval[stepsInterval[, AverageSteps==max(AverageSteps, na.rm = TRUE)]]
+```
+
+#### Set margins; plot the daily activity pattern and mark the interval when maximum number of steps taken
+
+```{r PlotActivityPattern}
+par(mar=c(4,4,3,1), oma=c(1,0,0,0), xpd=FALSE)
+
+with(stepsInterval, plot(Interval, AverageSteps, type="l", col="blue"))
+title(main="Average Daily Activity Pattern", col="red", font=2)
+points(stepsIntervalMax[,1], stepsIntervalMax[,2], pch=8, col="red")
+abline(v=stepsIntervalMax[,1], lty=1, lwd=2, col="red")
+axis(side=1, label=TRUE, at=stepsIntervalMax[,1], lwd=2, font = 2)
+
+mtext("08:35-08:40 interval recorded Maximum step count across all days",side=1, 
+      outer=TRUE, font = 2, col="blue")
+```
+
+## Q3-Imputing missing values
+#### Compute and print total number of missing values
+
+```{r PrintMissingValues}
+print(paste("Total Number of Missing Values in Dataset is: ", sum(is.na(actDT))))
+```
+
+#### Imputing strategy is to replace NAs with the mean of the step count; Add a new column after imputing NAs
+
+```{r ImputeNAs}
+actDTImputed <- plyr::mutate(actDT, stepsImputed=Hmisc::impute(actDT$steps,fun=mean))
+actDTImputed$date <- as.IDate(actDTImputed$date,"%Y-%m-%d")
+```
+
+#### Create a new dataset after imputing missing values for further processing
+
+```{r NewDataset}
+actDTImputed_New <- as.data.table(actDTImputed[,c(2,3,4)])
+actDTImputed_New$stepsImputed <- as.numeric(actDTImputed_New$stepsImputed)
+```
+
+#### Compute day-wise total step count, mean and median step count
+
+```{r ImputedTotalSteps}
+stepsDayImputed <- actDTImputed_New[, round(sum(stepsImputed)), by=date]
+names(stepsDayImputed) <- c("date", "StepCount")
+
+meanStepsDayImputed <- actDTImputed_New[, round(mean(stepsImputed, na.rm = TRUE)), by=date]
+medianStepsDayImputed <- actDTImputed_New[, round(median(stepsImputed, na.rm = TRUE)), by=date]
+names(meanStepsDayImputed) = c("date", "mean")
+names(medianStepsDayImputed)= c("date", "median")
+actMeanMedianImputed <- merge(meanStepsDayImputed,medianStepsDayImputed)
+
+```
+
+#### Histogram for total number of steps taken each day after imputation
+
+```{r HistTotalStepsImputed}
+ggplot(stepsDayImputed, aes(stepsDayImputed$date, stepsDayImputed$StepCount), na.action=na.omit) + 
+  geom_histogram(na.rm = TRUE, stat = "identity") +
+  theme(plot.title=element_text(face=2, hjust = 0, color="blue")) +
+  labs(title = "Day wise Total Steps - After Imputation", x="Date", y="Total Steps") 
+```
+
+#### Mean/Median Step count per each day after imputation
+
+```{r MeanMedianImputed}
+knitr::kable(actMeanMedianImputed, caption="Mean/Median Step count per each day after imputation")
+```
+
+#### Compare Mean, Median and Total Stepcount values, before and after imputation
+
+```{r CompMeanMedianStepCount}
+compMeanMedian <- merge(actMeanMedian,actMeanMedianImputed)
+compMeanMedian <- cbind.data.frame(compMeanMedian,stepsDay[,2],stepsDayImputed[,2])
+names(compMeanMedian) = c("date","Mean-BI","Median-BI","Mean-AI","Median-AI", "TotalSteps-BI","TotalSteps-AI")
+```
+
+#### Comparison table for Mean (Before/After Imputation) & Median (Before/After Imputation)
+
+```{r compMeanMedian}
+knitr::kable(compMeanMedian[,c(1,2,4,3,5,6,7)])
+```
+
+#### We see that there is no impact on the mean, median and total step count values by imputation except for imputed rows.
 
 
+## Q4-Are there differences in activity patterns between weekdays and weekends?
 
-## What is mean total number of steps taken per day?
+#### Add new factor variable "day" for weekend/weekday
 
+```{r Dayfactor}
+actDTImputed_New <- as.data.table(mutate(actDTImputed_New, day=factor(ifelse(weekdays(actDTImputed_New$date, abbreviate = TRUE) %nin% 
+                                            c("Sat","Sun"),"Weekday","Weekend"))))
 
+```
 
-## What is the average daily activity pattern?
+#### Compute average number of steps taken, averaged across weekday/weekend days
 
+```{r AverageStepsImputed}
+stepsIntImputed <- actDTImputed_New[, mean(stepsImputed), by="interval,day"]
+names(stepsIntImputed) =c("Interval","day", "AverageStepsImputed")
+```
 
+#### Make a panel plot showing Activity Pattern on weekday/weekend days
 
-## Imputing missing values
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
+```{r PanelPlotActivityPattern}
+ggplot(stepsIntImputed, aes(Interval,AverageStepsImputed)) + 
+  geom_line(col="blue")+
+  facet_wrap(.~day, nrow=2, ncol=1) +
+  theme(plot.title=element_text(face=2, hjust = 0, color="blue")) +
+  labs(title = "Average Daily Activity Pattern - After Imputation", x="Interval", y="Avg Steps")
+  
+```
