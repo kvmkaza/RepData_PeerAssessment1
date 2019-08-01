@@ -770,8 +770,8 @@ actDTImputed$date &lt;- as.IDate(actDTImputed$date,&quot;%Y-%m-%d&quot;)</code><
 <pre class="r"><code>actDTImputed_New &lt;- as.data.table(actDTImputed[,c(2,3,4)])
 actDTImputed_New$stepsImputed &lt;- as.numeric(actDTImputed_New$stepsImputed)</code></pre>
 </div>
-<div id="compute-day-wise-total-step-count-mean-and-median-step-count" class="section level4">
-<h4>Compute day-wise total step count, mean and median step count</h4>
+<div id="compute-day-wise-total-step-count-mean-median-and-step-count" class="section level4">
+<h4>Compute day-wise total step count, mean, median and step count</h4>
 <pre class="r"><code>stepsDayImputed &lt;- actDTImputed_New[, round(sum(stepsImputed)), by=date]
 names(stepsDayImputed) &lt;- c(&quot;date&quot;, &quot;StepCount&quot;)
 
@@ -1116,10 +1116,11 @@ actMeanMedianImputed &lt;- merge(meanStepsDayImputed,medianStepsDayImputed)</cod
 compMeanMedian &lt;- cbind.data.frame(compMeanMedian,stepsDay[,2],stepsDayImputed[,2])
 names(compMeanMedian) = c(&quot;date&quot;,&quot;Mean-BI&quot;,&quot;Median-BI&quot;,&quot;Mean-AI&quot;,&quot;Median-AI&quot;, &quot;TotalSteps-BI&quot;,&quot;TotalSteps-AI&quot;)</code></pre>
 </div>
-<div id="comparison-table-for-mean-beforeafter-imputation-median-beforeafter-imputation" class="section level4">
-<h4>Comparison table for Mean (Before/After Imputation) &amp; Median (Before/After Imputation)</h4>
-<pre class="r"><code>knitr::kable(compMeanMedian[,c(1,2,4,3,5,6,7)])</code></pre>
+<div id="comparison-table" class="section level4">
+<h4>Comparison table</h4>
+<pre class="r"><code>knitr::kable(compMeanMedian[,c(1,2,4,3,5,6,7)], caption = &quot;Comparison Table&quot;)</code></pre>
 <table>
+<caption>Comparison Table</caption>
 <thead>
 <tr class="header">
 <th align="left">date</th>
@@ -1683,9 +1684,9 @@ names(compMeanMedian) = c(&quot;date&quot;,&quot;Mean-BI&quot;,&quot;Median-BI&q
 </tr>
 </tbody>
 </table>
+<div id="we-see-that-there-is-no-impact-on-the-mean-median-and-total-step-count-values-by-imputation-except-for-imputed-rows." class="section level5">
+<h5>We see that there is no impact on the mean, median and total step count values by imputation except for imputed rows.</h5>
 </div>
-<div id="we-see-that-there-is-no-impact-on-the-mean-median-and-total-step-count-values-by-imputation-except-for-imputed-rows." class="section level4">
-<h4>We see that there is no impact on the mean, median and total step count values by imputation except for imputed rows.</h4>
 </div>
 </div>
 <div id="q4-are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">

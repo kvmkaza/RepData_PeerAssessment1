@@ -190,7 +190,7 @@ actDTImputed_New <- as.data.table(actDTImputed[,c(2,3,4)])
 actDTImputed_New$stepsImputed <- as.numeric(actDTImputed_New$stepsImputed)
 ```
 
-#### Compute day-wise total step count, mean and median step count
+#### Compute day-wise total step count, mean, median and step count
 
 
 ```r
@@ -300,14 +300,16 @@ compMeanMedian <- cbind.data.frame(compMeanMedian,stepsDay[,2],stepsDayImputed[,
 names(compMeanMedian) = c("date","Mean-BI","Median-BI","Mean-AI","Median-AI", "TotalSteps-BI","TotalSteps-AI")
 ```
 
-#### Comparison table for Mean (Before/After Imputation) & Median (Before/After Imputation)
+#### Comparison table
 
 
 ```r
-knitr::kable(compMeanMedian[,c(1,2,4,3,5,6,7)])
+knitr::kable(compMeanMedian[,c(1,2,4,3,5,6,7)], caption = "Comparison Table")
 ```
 
 
+
+Table: Comparison Table
 
 date          Mean-BI   Mean-AI   Median-BI   Median-AI   TotalSteps-BI   TotalSteps-AI
 -----------  --------  --------  ----------  ----------  --------------  --------------
@@ -373,7 +375,7 @@ date          Mean-BI   Mean-AI   Median-BI   Median-AI   TotalSteps-BI   TotalS
 2012-11-29         24        24           0           0            7047            7047
 2012-11-30        NaN        37          NA          37              NA           10766
 
-#### We see that there is no impact on the mean, median and total step count values by imputation except for imputed rows.
+##### We see that there is no impact on the mean, median and total step count values by imputation except for imputed rows.
 
 
 ## Q4-Are there differences in activity patterns between weekdays and weekends?
