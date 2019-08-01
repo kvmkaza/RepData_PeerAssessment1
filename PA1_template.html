@@ -409,9 +409,8 @@ actMeanMedian &lt;- merge(meanStepsDay,medianStepsDay)</code></pre>
 </div>
 <div id="report-mean-and-median-of-the-total-number-of-steps-taken-per-day" class="section level4">
 <h4>Report Mean and Median of the total number of steps taken per day</h4>
-<pre class="r"><code>knitr::kable(actMeanMedian, caption = &quot;Mean and Median of the total number of steps taken per day&quot;)</code></pre>
+<pre class="r"><code>knitr::kable(actMeanMedian, caption = &quot;Mean and Median of the total number of steps taken per day&quot;, format = &quot;markdown&quot;)</code></pre>
 <table>
-<caption>Mean and Median of the total number of steps taken per day</caption>
 <thead>
 <tr class="header">
 <th align="left">date</th>
@@ -791,9 +790,8 @@ actMeanMedianImputed &lt;- merge(meanStepsDayImputed,medianStepsDayImputed)</cod
 </div>
 <div id="meanmedian-step-count-per-each-day-after-imputation" class="section level4">
 <h4>Mean/Median Step count per each day after imputation</h4>
-<pre class="r"><code>knitr::kable(actMeanMedianImputed, caption=&quot;Mean/Median Step count per each day after imputation&quot;)</code></pre>
+<pre class="r"><code>knitr::kable(actMeanMedianImputed, caption=&quot;Mean/Median Step count per each day after imputation&quot;, format = &quot;markdown&quot;)</code></pre>
 <table>
-<caption>Mean/Median Step count per each day after imputation</caption>
 <thead>
 <tr class="header">
 <th align="left">date</th>
@@ -1118,9 +1116,8 @@ names(compMeanMedian) = c(&quot;date&quot;,&quot;Mean-BI&quot;,&quot;Median-BI&q
 </div>
 <div id="comparison-table" class="section level4">
 <h4>Comparison table</h4>
-<pre class="r"><code>knitr::kable(compMeanMedian[,c(1,2,4,3,5,6,7)], caption = &quot;Comparison Table&quot;)</code></pre>
+<pre class="r"><code>knitr::kable(compMeanMedian[,c(1,2,4,3,5,6,7)], caption = &quot;Comparison Table&quot;, format = &quot;markdown&quot;)</code></pre>
 <table>
-<caption>Comparison Table</caption>
 <thead>
 <tr class="header">
 <th align="left">date</th>

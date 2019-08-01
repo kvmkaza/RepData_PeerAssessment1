@@ -57,7 +57,7 @@ ggplot(stepsDay, aes(stepsDay$date, stepsDay$StepCount), na.action=na.omit) +
 #### Report Mean and Median of the total number of steps taken per day
 
 ```{r PrintMeanMedian}
-knitr::kable(actMeanMedian, caption = "Mean and Median of the total number of steps taken per day")
+knitr::kable(actMeanMedian, caption = "Mean and Median of the total number of steps taken per day", format = "markdown")
 ```
 
 ## Q2-What is the average daily activity pattern?
@@ -133,7 +133,7 @@ ggplot(stepsDayImputed, aes(stepsDayImputed$date, stepsDayImputed$StepCount), na
 #### Mean/Median Step count per each day after imputation
 
 ```{r MeanMedianImputed}
-knitr::kable(actMeanMedianImputed, caption="Mean/Median Step count per each day after imputation")
+knitr::kable(actMeanMedianImputed, caption="Mean/Median Step count per each day after imputation", format = "markdown")
 ```
 
 #### Compare Mean, Median and Total Stepcount values, before and after imputation
@@ -147,7 +147,7 @@ names(compMeanMedian) = c("date","Mean-BI","Median-BI","Mean-AI","Median-AI", "T
 #### Comparison table
 
 ```{r compMeanMedian}
-knitr::kable(compMeanMedian[,c(1,2,4,3,5,6,7)], caption = "Comparison Table")
+knitr::kable(compMeanMedian[,c(1,2,4,3,5,6,7)], caption = "Comparison Table", format = "markdown")
 ```
 
 ##### We see that there is no impact on the mean, median and total step count values by imputation except for imputed rows.
